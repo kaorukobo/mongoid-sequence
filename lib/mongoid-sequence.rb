@@ -21,15 +21,18 @@ module Mongoid
     end
 
     def set_sequence
-      sequences = self.mongo_session['__sequences']
+      sequences = self.mongo_client['__sequences']
       prefix    = self.class.sequence_prefix.present? ? self.send(self.class.sequence_prefix).to_s : ''
       self.class.sequence_fields.each do |field|
         embedded_relation_id = self.embedded? ? self._parent.id.to_s : nil
         sequence_name = [self.class.name.underscore, embedded_relation_id, prefix, field].select { |f| !f.blank? }.join("_")
-        next_sequence = sequences.where(_id: sequence_name).modify(
-            { '$inc' => { seq: 1 } }, upsert: true, new: true
-        )
-        self[field]   = next_sequence["seq"]
+        next_sequence = if sequences.find(_id: sequence_name).count.zero?
+          sequences.insert_one _id: sequence_name, seq: 1
+          sequences.find(_id: sequence_name).first
+        else
+          sequences.find_one_and_update({ _id: sequence_name }, { '$inc' => { seq: 1 } }, :return_document => :after )
+        end
+        self[field] = next_sequence["seq"]
       end if self.class.sequence_fields
     end
   end
