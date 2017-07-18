@@ -37,10 +37,9 @@ class Sequenced
   field :my_sequence, :type => Integer
   belongs_to :organization
 
-	sequence :my_sequence, :organization_id
+	sequence :my_sequence, prefix: :organization_id
 end
 ```
-
 
 If you have an embedded document, you don't have worrying about fake increment inside each child, mongoid-secuence will recognize this association and segregate the count per each child
 ```ruby
@@ -56,6 +55,24 @@ class Sequenced
 end
 ```
 
+If you have an inheritance relation and you want to keep the sequence associated with one of your parents, you
+can specify what ancestors level you want using the parent_level option, below scenario will keep the sequence
+called parent_my_sequence sequence for Child instances
+```ruby
+class Parent
+	include Mongoid::Document
+	include Mongoid::Sequence
+
+  field :my_sequence, :type => Integer
+end
+
+class Child
+	include Mongoid::Document
+	include Mongoid::Sequence
+
+  sequence :my_sequence, parent_level: 1
+end
+```
 
 It's also possible to make the `id` field behave like this:
 
@@ -88,4 +105,4 @@ gem "mongoid-sequence"
 
 <hr/>
 
-Copyright © 2010 Gonçalo Silva, released under the MIT license
+Copyright © 2017 Gonçalo Silva, Johan Tique released under the MIT license

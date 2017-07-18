@@ -4,5 +4,5 @@ class PrefixSequencedModel
 
   field :tenant_id, :type => Integer
   field :auto_increment, :type => Integer
-  sequence :auto_increment, :tenant_id
+  sequence :auto_increment, prefix: :tenant_id
 end

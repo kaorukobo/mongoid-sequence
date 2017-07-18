@@ -1,6 +1,7 @@
 require "bundler/setup"
 require "test/unit"
 require "mongoid"
+require "mongoid/paranoia"
 
 require File.expand_path("../../lib/mongoid-sequence", __FILE__)
 
@@ -12,12 +13,12 @@ class BaseTest < Test::Unit::TestCase
   def test_default; end # Avoid "No tests were specified." on 1.8.7
 
   def teardown
-    Mongoid::Sessions.default.use('mongoid_sequence_test').drop
+    # Mongoid::Sessions.default.use('mongoid_sequence_test').drop
+    ::Mongoid.default_client.database.drop
   end
 
   def assert_sequence_value( name, value )
-    sequence = Mongoid::Sessions.default['__sequences'].where( :_id => name ).one
+    sequence = ::Mongoid.default_client['__sequences'].find( :_id => name ).first
     assert_equal( value, sequence['seq'] )
   end
-
 end

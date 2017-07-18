@@ -63,4 +63,16 @@ class SequenceTest < BaseTest
     assert_equal first_parent_model.children.only(:auto_increment).map(&:auto_increment).sort, (1..(n*m)).to_a
     assert_equal second_parent_model.children.only(:auto_increment).map(&:auto_increment).sort, (1..n).to_a
   end
+
+  def test_parent_level_consistency
+    n = 100
+    n.times do |current|
+      FirstSubtypeModel.create
+      assert_sequence_value "parent_model_auto_increment", (current * 2) + 1
+      SecondSubtypeModel.create
+      assert_sequence_value "parent_model_auto_increment", (current * 2) + 2
+    end
+    assert_equal FirstSubtypeModel.all.only(:auto_increment).map(&:auto_increment).sort, (1..n*2).select(&:odd?)
+    assert_equal SecondSubtypeModel.all.only(:auto_increment).map(&:auto_increment).sort, (1..n*2).select(&:even?)
+  end
 end
