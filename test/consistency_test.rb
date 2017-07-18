@@ -71,8 +71,11 @@ class SequenceTest < BaseTest
       assert_sequence_value "parent_model_auto_increment", (current * 2) + 1
       SecondSubtypeModel.create
       assert_sequence_value "parent_model_auto_increment", (current * 2) + 2
+      ThirdSubtypeModel.create
+      assert_sequence_value "third_subtype_model_auto_increment", current + 1
     end
     assert_equal FirstSubtypeModel.all.only(:auto_increment).map(&:auto_increment).sort, (1..n*2).select(&:odd?)
     assert_equal SecondSubtypeModel.all.only(:auto_increment).map(&:auto_increment).sort, (1..n*2).select(&:even?)
+    assert_equal ThirdSubtypeModel.all.only(:auto_increment).map(&:auto_increment).sort, (1..n).to_a
   end
 end

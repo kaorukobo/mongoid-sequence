@@ -38,6 +38,7 @@ class UniquenessTest < BaseTest
     n.times do |current|
       FirstSubtypeModel.create
       SecondSubtypeModel.create
+      ThirdSubtypeModel.create
     end
     sequences = (FirstSubtypeModel.all.only(:auto_increment).map(&:auto_increment).sort +
     SecondSubtypeModel.all.only(:auto_increment).map(&:auto_increment).sort).uniq.size
