@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{Specify fields to behave like a sequence number (exactly like the "id" column in conventional SQL flavors).}
   gem.homepage      = "https://github.com/goncalossilva/mongoid-sequence"
 
-  gem.add_dependency("mongoid", ">= 3.1", "< 6")
-  gem.add_dependency("activesupport", ">= 3.2", "< 6")
+  gem.add_dependency("mongoid", ">= 3.1", "~> 7.0.0")
+  gem.add_dependency("activesupport", ">= 3.2", "~> 5.2.0")
 
   gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   gem.files         = `git ls-files`.split("\n")
